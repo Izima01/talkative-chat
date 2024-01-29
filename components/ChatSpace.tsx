@@ -28,7 +28,7 @@ const ChatSpace = () => {
             const data = await res?.json();
             // console.log(data);
             setMessages(data?.messages);
-            setSelectedChat(data?.chat);
+            // setSelectedChat(data?.chat);
             setloading(false);
         } catch(err) {
             setloading(false);
@@ -63,6 +63,7 @@ const ChatSpace = () => {
     }
 
     useEffect(() => {
+        console.log(selectedChat);
         messagesFetcher();
     }, [selectedChat._id]);
 
@@ -87,11 +88,11 @@ const ChatSpace = () => {
                         </div>
                         <section className='h-full w-full rounded-lg bg-gray-100 flex flex-col justify-end gap-2.5 p-3 overflow-y-hidden'>
                             {
-                                loading ? <Spinner /> : messages.length == 0 ? (
+                                loading ? <Spinner /> : messages?.length == 0 ? (
                                     <div className="flex flex-col overflow-y-scroll text-2xl justify-center items-center messages mb-10">
                                         No messages yet
                                     </div>
-                                ) : (<div className="flex flex-col overflow-y-scroll messages">
+                                ) : (<div className="flex flex-col overflow-y-scroll scroll">
                                         <ScrollableChat messages={messages} />
                                     </div>
                                 )

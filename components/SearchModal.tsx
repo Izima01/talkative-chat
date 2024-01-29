@@ -2,6 +2,7 @@ import useStore from '@/store';
 import React, { useState } from 'react'
 import UserBox from './UserBox';
 import { IoClose } from 'react-icons/io5';
+import Spinner from './Spinner';
 
 type propsss = {
     showSearcher: boolean;
@@ -19,13 +20,13 @@ const SearchModal = (props: propsss) => {
 
     const { showSearcher, setShowSearcher, accessChat, loadingChat } = props;
 
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!search) return alert('Enter a search term');
+    const handleSearch = async (val: string) => {
+        setSearch(val);
+        if (!val) return;
 
         try {
             setloading(true);
-            const res = await fetch(`${url}users?search=${search}`, {
+            const res = await fetch(`${url}users?search=${val}`, {
                 headers: {
                     'Authorization': `Bearer ${user.token}`
                 }
@@ -50,13 +51,12 @@ const SearchModal = (props: propsss) => {
                     </button>
                 </div>
                 <hr />
-                <form className="flex gap-2 items-stretch w-full my-2" onSubmit={(e) => handleSearch(e)}>
-                    <input type="search" className="w-10/12 rounded-md border border-slate-200 outline-none bg-slate-50 placeholder:text-slate-600 text-slate-600 pl-2" placeholder="Search User" onChange={(e) => setSearch(e.target.value)} />
-                    <button
-                        className="px-2 py-1.5 bg-slate-200 rounded-md border border-slate-200"
-                        onClick={(e) => handleSearch(e)}
-                    >Go</button>
-                </form>
+                <input
+                    type="search"
+                    className="w-full my-2 py-2 rounded-md border border-slate-200 outline-none bg-slate-50 placeholder:text-slate-600 text-slate-600 pl-2"
+                    placeholder="Search User"
+                    onChange={(e) => handleSearch(e.target.value)}
+                />
                 <section className="w-full flex flex-col gap-2">
                     {
                         loading ? (
@@ -70,7 +70,7 @@ const SearchModal = (props: propsss) => {
                         ))
                     }
                     {
-                        loadingChat ? 'Chat loading' : ''
+                        loadingChat ? <Spinner /> : ''
                     }
                 </section>
             </div>

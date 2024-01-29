@@ -21,7 +21,8 @@ const Chats = () => {
           'Authorization': `Bearer ${user.token}`
         }
       });
-      const data = await res?.json();
+      const data = await res.json();
+      console.log(data);
       setChats(data?.allChats);
       setLoading(false);
     } catch (err) {
@@ -31,12 +32,15 @@ const Chats = () => {
   }
 
   useEffect(() => {
-    if(user?.token && chats?.length == 0) fetcher();
+    if(user?.token) fetcher();
+  }, []);
+
+  useEffect(() => {
     if (fetchAgain) {
       fetcher()
       setFetchAgain(false);
     };
-  }, [user, chats, fetchAgain]);
+  }, [fetchAgain]);
 
   return (
     <div className='w-full h-screen bg-img flex flex-col justify-stretch items-stretch overflow-hidden'>

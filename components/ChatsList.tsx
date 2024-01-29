@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import ChatItem from './ChatItem'
 import useStore from '@/store';
 import GroupChatModal from './GroupChatModal';
+import ScrollableFeed from 'react-scrollable-feed';
+import { FaPlus } from "react-icons/fa6";
 
 type proptype = {
     loading: boolean
@@ -16,10 +18,11 @@ const ChatsList = (props: proptype) => {
             <div className='w-full px-3 flex justify-between'>
                 <h2 className='text-xl md:text-2xl'>My Chats</h2>
                 <button className='py-1 px-3 bg-slate-300 rounded-md' onClick={() => setShowGroup(true)}>
-                    New Group Chat +
+                    New Group Chat
+                    <FaPlus />
                 </button>
             </div>
-            <section className='overflow-y-hidden w-full h-full rounded-lg bg-gray-100 flex flex-col items-stretch gap-2.5 p-2'>
+            <ScrollableFeed className='w-full h-full rounded-lg bg-gray-100 flex flex-col overflow-y-scroll scroll gap-2.5 p-2'>
                 {
                     props.loading ? (
                         <>
@@ -31,7 +34,7 @@ const ChatsList = (props: proptype) => {
                         <ChatItem key={chat._id} chat={chat} loading={props.loading} />
                     ))
                 }
-            </section>
+            </ScrollableFeed>
             <GroupChatModal setShowGroup={setShowGroup} showGroup={showGroup} />
         </aside>
     )

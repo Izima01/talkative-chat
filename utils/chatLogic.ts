@@ -20,9 +20,9 @@ export const isSameSenderMargin = (messages: Record<string, any>[], m: Record<st
 export const isSameSender = (messages: Record<string, any>[], m: Record<string, any>, i: number, userId: string) => {
   return (
     i < messages.length - 1 &&
-    (messages[i + 1].sender._id !== m.sender._id ||
-      messages[i + 1].sender._id === undefined) &&
-    messages[i].sender._id !== userId
+    (messages?.[i + 1]?.sender?._id !== m?.sender?._id ||
+      messages?.[i + 1]?.sender?._id === undefined) &&
+    messages?.[i]?.sender?._id !== userId
   );
 };
 

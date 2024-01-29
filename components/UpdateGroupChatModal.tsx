@@ -137,8 +137,8 @@ const UpdateGroupChatModal = (props: propTypes) => {
             <div className="flex flex-wrap w-full gap-1 m-2">
                 {
                     selectedChat?.users?.map((user: Record<string, any>) => (
-                        <div key={user._id} className="px-2 rounded-md bg-blue-500 hover:bg-blue-600 capitalize leading-normal cursor-pointer flex items-center text-white">
-                            {user.username}
+                        <div key={user._id} className="px-2 rounded-md bg-blue-500 hover:bg-blue-600 capitalize leading-normal cursor-pointer flex items-center text-white min-w-12">
+                            {user?.username}
                             <button className='ml-2' onClick={() => handleRemove(user)}>
                                 <IoClose />
                             </button>

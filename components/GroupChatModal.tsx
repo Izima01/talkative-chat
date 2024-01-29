@@ -31,7 +31,6 @@ const GroupChatModal = (props: propTypes) => {
                 }
             });
             const data = await res.json();
-            console.log(data);
             setSearchResult(data);
         } catch(err) {
             console.log(err);
