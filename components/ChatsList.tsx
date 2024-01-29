@@ -17,7 +17,7 @@ const ChatsList = (props: proptype) => {
         <aside className={`bg-white p-3 w-full md:w-5/12 md:flex gap-3 rounded-lg relative overflow-y-hidden border border-gray-600 flex-col items-center ${selectedChat._id ? 'hidden' : 'flex'}`}>
             <div className='w-full px-3 flex justify-between'>
                 <h2 className='text-xl md:text-2xl'>My Chats</h2>
-                <button className='py-1 px-3 bg-slate-300 rounded-md' onClick={() => setShowGroup(true)}>
+                <button className='py-1 px-3 bg-slate-300 rounded-md flex gap-3 items-center' onClick={() => setShowGroup(true)}>
                     New Group Chat
                     <FaPlus />
                 </button>
