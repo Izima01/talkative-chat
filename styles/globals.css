@@ -2,26 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.bg-img {
+    background-image: url(../public/pexels-ian-turnell-709552.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.loading {
+    background-color: rgb(209, 209, 209);
+    animation: bgblink infinite 1s;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@keyframes bgblink {
+    0% {
+        background-color: rgb(223, 222, 222);
+    }
+    100% {
+        background-color: rgb(209, 209, 209);
+    }
+}
+
+.pic-modal {
+    padding: 4px 0;
+    border-radius: 8px;
+    background-color: white;
+    width: 120px;
+    box-shadow: 1px 1px 5px 2px rgb(61, 61, 255);
+    margin-top: 132px;
+    margin-right: -16px;
+    z-index: 10;
+}
+
+#searcher {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+dialog#profile {
+    padding: 16px;
+    border-radius: 12px;
+    width: 70%;
+}
+
+.messages {
+    scrollbar-width: none;
+}
+
+@media (min-width: 640px) {
+    dialog#profile {
+        width: 35%;
+    }
 }
