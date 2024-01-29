@@ -1,3 +1,5 @@
+"use client"
+
 import ChatHeader from '@/components/ChatHeader';
 import ChatSpace from '@/components/ChatSpace';
 import ChatsList from '@/components/ChatsList';
