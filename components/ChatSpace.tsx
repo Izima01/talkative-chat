@@ -62,10 +62,6 @@ const ChatSpace = () => {
         setNewMessage(val);
     }
 
-    useEffect(() => {
-        messagesFetcher();
-    }, [selectedChat._id]);
-
     return (
         <section className={`w-full md:w-7/12 md:flex bg-white p-3 rounded-lg relative border border-gray-600 flex-col gap-3 items-center ${selectedChat._id ? 'flex' : 'hidden'}`}>
             {
