@@ -7,7 +7,8 @@ export const emptyUser = {
     username: '',
     picture: '',
     iat: '',
-    token: ''
+    token: '',
+    isOnline: false
 }
 
 export interface User {
@@ -16,6 +17,7 @@ export interface User {
     userId: string;
     picture: string;
     token: string;
+    isOnline: boolean
 }
 
 type Store = {

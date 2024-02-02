@@ -60,12 +60,12 @@ const SignIn = () => {
                 <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit}>
                     <label htmlFor="" className="font-medium">
                         Username
-                        <input type="text" placeholder="Enter your name" id="username" value={username} onChange={(e) => setusername(e.target.value)} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
+                        <input type="text" placeholder="Enter your name" id="username" value={username} onChange={(e) => setusername(e.target.value.trim().toLowerCase())} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
                     </label>
 
                     <label htmlFor="" className="font-medium">
                         Password
-                        <input type="password" placeholder="Enter your password" id="password" value={password} onChange={(e) => setpassword(e.target.value)} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
+                        <input type="password" placeholder="Enter your password" id="password" value={password} onChange={(e) => setpassword(e.target.value.trim().toLowerCase())} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
                     </label>
                     
                     <button onClick={handleSubmit} className="bg-blue-700 py-2 w-full rounded-md font-semibold text-white disabled:bg-blue-500" disabled={loading}>

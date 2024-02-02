@@ -30,7 +30,8 @@ const ChatsList = (props: proptype) => {
                             <button className='w-full rounded-md loading h-14'></button>
                             <button className='w-full rounded-md loading h-14'></button>
                         </>
-                    ) : chats?.map((chat: Record<string, any>) => (
+                    ) : !chats?.length ? 'No chats yet. You can search for a user'
+                    : chats?.map((chat: Record<string, any>) => (
                         <ChatItem key={chat._id} chat={chat} loading={props.loading} />
                     ))
                 }

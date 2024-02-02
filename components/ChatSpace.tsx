@@ -6,40 +6,34 @@ import ProfileModal from "./ProfileModal";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import Spinner from "./Spinner";
 import ScrollableChat from "./ScrollableChat";
+import { ClientToServerEvents, ServerToClientEvents } from '@/utils/types/socket.io-client';
+import { Socket } from 'socket.io-client';
 
-const ChatSpace = () => {
-    const { user, setUser, setChats, selectedChat, setSelectedChat, setFetchAgain } = useStore();
-    const [loading, setloading] = useState(false);
-    const [messages, setMessages] = useState<Record<string, any>[]>([]);
+type propType = {
+    messages: Record<string, any>[];
+    messageLoading: boolean;
+    setMessages: (msg: Record<string, any>[]) => void;
+    socket: Socket<ServerToClientEvents, ClientToServerEvents>;
+    selectedChatCompare: string;
+    socketConnected: boolean;
+}
+
+const ChatSpace = (props: propType) => {
+    const { user, selectedChat, setSelectedChat, setFetchAgain } = useStore();
     const [newMessage, setNewMessage] = useState('');
+    const [whoIsTyping, setwhoIsTyping] = useState('');
     const [showProfile, setShowProfile] = useState(false);
     const [showGroup, setShowGroup] = useState(false);
+    const [typing, setTyping] = useState(false);
     const url = process.env.NEXT_PUBLIC_API_URL as string;
-    const { isGroupChat, chatName, users,  } = selectedChat;
-
-    const messagesFetcher = async () => {
-        try {
-            setloading(true);
-            const res = await fetch(`${url}messages?chatId=${selectedChat._id}`, {
-                headers: {
-                    'Authorization': `Bearer ${user.token}`,
-                }
-            });
-            const data = await res?.json();
-            // console.log(data);
-            setMessages(data?.messages);
-            // setSelectedChat(data?.chat);
-            setloading(false);
-        } catch(err) {
-            setloading(false);
-            console.log(err);
-        }
-    }
+    const { isGroupChat, chatName, users  } = selectedChat;
+    const { messageLoading, messages, setMessages, socket, selectedChatCompare, socketConnected } = props;
 
     const sendMessage = async (e: React.KeyboardEvent) => {
         if (e.key == 'Enter' && newMessage) {
             try {
                 setNewMessage("");
+                socket.emit("stopTyping", selectedChat._id);
                 const res = await fetch(`${url}messages/`, {
                     method: 'POST',
                     headers: {
@@ -48,24 +42,54 @@ const ChatSpace = () => {
                     },
                     body: JSON.stringify({ content: newMessage, chatId: selectedChat._id })
                 });
-                const data = await res?.json();
-                // console.log(data);
-                if (!data.success) return alert (data.error);
+                const data = await res.json();
+                socket.emit("newMessage", data?.message);
                 setMessages([...messages, data?.message]);
+                setFetchAgain(true);
+                if (!data.success) return alert (data.error);
             } catch (error) {
                 console.log(error);
             }
         }
     }
+    // useEffect(() => {
+    // });
+    
+    useEffect(() => {
+        socketConnected && socket.on('typing', (username) => setwhoIsTyping(username));
+        socketConnected && socket.on('stopTyping', () => setwhoIsTyping(''));
+
+        socketConnected && socket.on("messageRecieved", (newMessage: Record<string, any>) => {
+            if (!selectedChatCompare || selectedChatCompare !== newMessage.chat._id) {
+                console.log('skdk');
+            } else {
+                setMessages([...messages, newMessage]);
+            }
+        })
+    });
 
     const handleTyping = (val: string) => {
         setNewMessage(val);
-    }
+        if (!socketConnected) return;
 
-    useEffect(() => {
-        console.log(selectedChat);
-        messagesFetcher();
-    }, [selectedChat._id]);
+        if (!typing) {
+            setTyping(true);
+            socket.emit("typing", selectedChat._id, user.username);
+        }
+
+        let lastTypingTime = new Date().getTime();
+        const timerLength = 2400;
+
+        setTimeout(() => {
+            const timeNow = new Date().getTime();
+            const timeDiff = timeNow - lastTypingTime;
+
+            if (timeDiff >= timerLength && typing) {
+                socket.emit("stopTyping", selectedChat._id);
+                setTyping(false);
+            } 
+        }, timerLength);
+    }
 
     return (
         <section className={`w-full md:w-7/12 md:flex bg-white p-3 rounded-lg relative border border-gray-600 flex-col gap-3 items-center ${selectedChat._id ? 'flex' : 'hidden'}`}>
@@ -88,15 +112,18 @@ const ChatSpace = () => {
                         </div>
                         <section className='h-full w-full rounded-lg bg-gray-100 flex flex-col justify-end gap-2.5 p-3 overflow-y-hidden'>
                             {
-                                loading ? <Spinner /> : messages?.length == 0 ? (
+                                messageLoading ? <Spinner />
+                                : messages?.length == 0 ? (
                                     <div className="flex flex-col overflow-y-scroll text-2xl justify-center items-center messages mb-10">
                                         No messages yet
                                     </div>
-                                ) : (<div className="flex flex-col overflow-y-scroll scroll">
+                                ) : (
+                                    <div className="flex flex-col overflow-y-scroll scroll">
                                         <ScrollableChat messages={messages} />
                                     </div>
                                 )
                             }
+                            {whoIsTyping ? <p className="first-letter:capitalize text-gray-700 -mb-2">{`${whoIsTyping} is typing...`}</p> : ''}
                             <input type="text" placeholder="Enter a message..." onKeyDown={sendMessage} onChange={(e) => handleTyping(e.target.value)} className=" bg-[#e0e0e0] px-3 py-1 w-full rounded-md" value={newMessage} />
                         </section>
                     </>

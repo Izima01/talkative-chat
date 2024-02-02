@@ -18,7 +18,7 @@ const Signup = () => {
 
     const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         const { id, value } = e.target;
-        setUserData((data) => ({...data, [id]: value }));
+        setUserData((data) => ({...data, [id]: value.trim().toLowerCase() }));
     }
 
     const uploadPic: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
