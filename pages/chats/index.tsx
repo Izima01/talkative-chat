@@ -7,10 +7,10 @@ import useGetUserDets from '@/hooks/useGetUserDets';
 import useStore from '@/store';
 import { ClientToServerEvents, ServerToClientEvents } from '@/utils/types/socket.io-client';
 import React, { useEffect, useState } from 'react'
-import { io, Socket } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 
-let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 let selectedChatCompare: string;
+let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const Chats = () => {
   useGetUserDets();
@@ -95,8 +95,8 @@ const Chats = () => {
     <div className='w-full h-screen bg-img flex flex-col justify-stretch items-stretch overflow-hidden'>
       <ChatHeader />
       <main className='p-3 flex gap-3 h-[91vh]'>
-        <ChatsList loading={loading} />
-        <ChatSpace messageLoading={messagesLoading} messages={messages} socket={socket} selectedChatCompare={selectedChatCompare} socketConnected={socketConnected} setMessages={setMessages} />
+        <ChatsList socketConnected={socketConnected} loading={loading} socket={socket} />
+        <ChatSpace socket={socket} messageLoading={messagesLoading} messages={messages} selectedChatCompare={selectedChatCompare} socketConnected={socketConnected} setMessages={setMessages} />
       </main>
     </div>
   )

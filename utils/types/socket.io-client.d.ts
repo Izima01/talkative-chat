@@ -12,7 +12,8 @@ export interface ServerToClientEvents {
     messageRecieved: (message: Record<string, any>) => void;
     typing: (username: string) => void;
     stopTyping: () => void;
-    // withAck: (d: string, callback: (e:number) => void) => void;
+    addedToGroup: (chat: Record<string, any>) => void;
+    removedFromGroup: (chat: Record<string, any>) => void;
 }
 
 export interface ClientToServerEvents {
@@ -24,6 +25,7 @@ export interface ClientToServerEvents {
     typing: (room: string, username: string) => void;
     stopTyping: (room: string) => void;
     disconnect: (user: SocketData) => void;
+    newGroup: (chat: Record<string, any>) => void;
 }
 
 interface InterServerEvents {

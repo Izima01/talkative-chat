@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 import ChatItem from './ChatItem'
 import useStore from '@/store';
 import GroupChatModal from './GroupChatModal';
-import ScrollableFeed from 'react-scrollable-feed';
 import { FaPlus } from "react-icons/fa6";
+import { ClientToServerEvents, ServerToClientEvents } from '@/utils/types/socket.io-client';
+import { Socket } from 'socket.io-client';
 
 type proptype = {
-    loading: boolean
+    loading: boolean;
+    socketConnected: boolean;
+    socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 }
 
 const ChatsList = (props: proptype) => {
@@ -22,7 +25,7 @@ const ChatsList = (props: proptype) => {
                     <FaPlus />
                 </button>
             </div>
-            <ScrollableFeed className='w-full h-full rounded-lg bg-gray-100 flex flex-col overflow-y-scroll scroll gap-2.5 p-2'>
+            <div className='w-full h-full rounded-lg bg-gray-100 flex flex-col overflow-y-scroll scroll gap-2.5 p-2'>
                 {
                     props.loading ? (
                         <>
@@ -35,8 +38,8 @@ const ChatsList = (props: proptype) => {
                         <ChatItem key={chat._id} chat={chat} loading={props.loading} />
                     ))
                 }
-            </ScrollableFeed>
-            <GroupChatModal setShowGroup={setShowGroup} showGroup={showGroup} />
+            </div>
+            <GroupChatModal socket={props.socket} socketConnected={props.socketConnected} setShowGroup={setShowGroup} showGroup={showGroup} />
         </aside>
     )
 }

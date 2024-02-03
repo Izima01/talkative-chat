@@ -1,6 +1,6 @@
 import useStore from "@/store";
 import { getSender, getSenderFull } from "@/utils/chatLogic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaEye } from "react-icons/fa6";
 import ProfileModal from "./ProfileModal";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
@@ -13,13 +13,14 @@ type propType = {
     messages: Record<string, any>[];
     messageLoading: boolean;
     setMessages: (msg: Record<string, any>[]) => void;
-    socket: Socket<ServerToClientEvents, ClientToServerEvents>;
     selectedChatCompare: string;
     socketConnected: boolean;
+    socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 }
 
 const ChatSpace = (props: propType) => {
-    const { user, selectedChat, setSelectedChat, setFetchAgain } = useStore();
+    const { user, selectedChat, setSelectedChat, setFetchAgain, setNotifications, notifications } = useStore();
+    const toneRef = useRef<HTMLAudioElement>(null);
     const [newMessage, setNewMessage] = useState('');
     const [whoIsTyping, setwhoIsTyping] = useState('');
     const [showProfile, setShowProfile] = useState(false);
@@ -27,12 +28,11 @@ const ChatSpace = (props: propType) => {
     const [typing, setTyping] = useState(false);
     const url = process.env.NEXT_PUBLIC_API_URL as string;
     const { isGroupChat, chatName, users  } = selectedChat;
-    const { messageLoading, messages, setMessages, socket, selectedChatCompare, socketConnected } = props;
+    const { messageLoading, messages, setMessages, selectedChatCompare, socketConnected, socket } = props;
 
     const sendMessage = async (e: React.KeyboardEvent) => {
         if (e.key == 'Enter' && newMessage) {
             try {
-                setNewMessage("");
                 socket.emit("stopTyping", selectedChat._id);
                 const res = await fetch(`${url}messages/`, {
                     method: 'POST',
@@ -43,17 +43,16 @@ const ChatSpace = (props: propType) => {
                     body: JSON.stringify({ content: newMessage, chatId: selectedChat._id })
                 });
                 const data = await res.json();
+                if (!data.success) return alert (data.error);
+                setNewMessage("");
                 socket.emit("newMessage", data?.message);
                 setMessages([...messages, data?.message]);
                 setFetchAgain(true);
-                if (!data.success) return alert (data.error);
             } catch (error) {
                 console.log(error);
             }
         }
     }
-    // useEffect(() => {
-    // });
     
     useEffect(() => {
         socketConnected && socket.on('typing', (username) => setwhoIsTyping(username));
@@ -61,7 +60,10 @@ const ChatSpace = (props: propType) => {
 
         socketConnected && socket.on("messageRecieved", (newMessage: Record<string, any>) => {
             if (!selectedChatCompare || selectedChatCompare !== newMessage.chat._id) {
-                console.log('skdk');
+                if (!notifications.find(notif => notif.chat._id == newMessage.chat._id)) {
+                    setNotifications([...notifications, {...newMessage, reason: "new message" }]);
+                    // toneRef.current?.play();
+                }
             } else {
                 setMessages([...messages, newMessage]);
             }
@@ -70,6 +72,7 @@ const ChatSpace = (props: propType) => {
 
     const handleTyping = (val: string) => {
         setNewMessage(val);
+
         if (!socketConnected) return;
 
         if (!typing) {
@@ -104,6 +107,9 @@ const ChatSpace = (props: propType) => {
                             <button className="bg-slate-200 p-2 rounded-md md:hidden" onClick={() => setSelectedChat({_id: ''})}>
                                 <FaArrowLeft />
                             </button>
+                            {/* <audio loop ref={toneRef}>
+                                <source src="../public/new-message.mp3" />
+                            </audio> */}
                             <h2 className='text-xl md:text-2xl font-normal capitalize'>{isGroupChat ? chatName : getSender(user, users)}</h2>
                             <button className="bg-slate-200 p-2 rounded-md" onClick={() => {
                                 isGroupChat ? setShowGroup(true) : setShowProfile(true)}}>

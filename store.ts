@@ -1,6 +1,8 @@
 "use client"
 
+import { Socket } from 'socket.io-client';
 import { create } from 'zustand';
+import { ClientToServerEvents, ServerToClientEvents } from './utils/types/socket.io-client';
 
 export const emptyUser = {
     userId: '',
@@ -29,6 +31,10 @@ type Store = {
     setChats: (vals: Record<string, any>[]) => void;
     fetchAgain: boolean;
     setFetchAgain: (val: boolean) => void;
+    notifications: Record<string, any>[];
+    setNotifications: (val: Record<string, any>[]) => void;
+    // socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
+    // setSocket: (val: Socket<ServerToClientEvents, ClientToServerEvents>) => void;
 }
 
 const useStore = create<Store>((set) => ({
@@ -54,6 +60,18 @@ const useStore = create<Store>((set) => ({
     setFetchAgain(val) {
         set(state => ({
             ...state, fetchAgain: val
+        }))
+    },
+    // socket: null,
+    // setSocket(val) {
+    //     set(state => ({
+    //         ...state, socket: val
+    //     }))
+    // },
+    notifications: [],
+    setNotifications(val) {
+        set(state => ({
+            ...state, notifications: val
         }))
     }
 }));
