@@ -13,7 +13,6 @@ interface errInterface {
 const SignIn = () => {
     useGetUserDets();
     const [username, setusername] = useState('')
-    const [password, setpassword] = useState('');
     const [loading, setloading] = useState(false);
     const url = process.env.NEXT_PUBLIC_API_URL as string;
     const { user, setUser } = useStore();
@@ -21,14 +20,14 @@ const SignIn = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!username || !password) return alert("Fill in all the fields");
-        if (password.length < 6) return alert("Password should be at least 6 characters");
+        if (!username) return alert("Fill in all the fields");
+        // if (password.length < 6) return alert("Password should be at least 6 characters");
 
         try {
             setloading(true);
-            const response = await fetch(`${url}users/login`, {
+            const response = await fetch(`${url}users/login-test`, {
                 method: 'POST',
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ username }),
                 headers: {
                     'Content-type': 'application/json'
                 }
@@ -37,7 +36,6 @@ const SignIn = () => {
             // console.log(data);
             if (data.success) {
                 const user: User = await jwtDecode(data?.token);
-                // localStorage.setItem('talkative-auth', JSON.stringify({...user, token: data?.token}));
                 setUser({ ...user, token: data?.token });
                 alert('Login successful');
                 setloading(false);
@@ -60,19 +58,18 @@ const SignIn = () => {
                 <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit}>
                     <label htmlFor="" className="font-medium">
                         Username
-                        <input type="text" placeholder="Enter your name" id="username" value={username} onChange={(e) => setusername(e.target.value.trim().toLowerCase())} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
+                        <input type="text" placeholder="Enter your Username" id="username" value={username} onChange={(e) => setusername(e.target.value.trim().toLowerCase())} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
                     </label>
 
-                    <label htmlFor="" className="font-medium">
+                    {/* <label htmlFor="" className="font-medium">
                         Password
                         <input type="password" placeholder="Enter your password" id="password" value={password} onChange={(e) => setpassword(e.target.value.trim().toLowerCase())} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
-                    </label>
+                    </label> */}
                     
                     <button onClick={handleSubmit} className="bg-blue-700 py-2 w-full rounded-md font-semibold text-white disabled:bg-blue-500" disabled={loading}>
-                        {loading ? "Processing" : "Sign In"}
+                        {loading ? "Processing" : "Sign In or Sign Up"}
                     </button>
                 </form>
-                <h3 className="text-center text-xl mt-4">Don't have an account? <Link href="/signup" className="text-blue-500 underline">Register</Link></h3>
             </main>
         </div>
   )

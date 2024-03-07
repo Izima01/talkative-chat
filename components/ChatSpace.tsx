@@ -29,6 +29,7 @@ const ChatSpace = (props: propType) => {
     const url = process.env.NEXT_PUBLIC_API_URL as string;
     const { isGroupChat, chatName, users  } = selectedChat;
     const { messageLoading, messages, setMessages, selectedChatCompare, socketConnected, socket } = props;
+    const [selectedUser, setSelectedUser] = useState<Record<string, any>>({});
 
     const sendMessage = async (e: React.KeyboardEvent) => {
         if (e.key == 'Enter' && newMessage) {
@@ -107,9 +108,6 @@ const ChatSpace = (props: propType) => {
                             <button className="bg-slate-200 p-2 rounded-md md:hidden" onClick={() => setSelectedChat({_id: ''})}>
                                 <FaArrowLeft />
                             </button>
-                            {/* <audio loop ref={toneRef}>
-                                <source src="../public/new-message.mp3" />
-                            </audio> */}
                             <h2 className='text-xl md:text-2xl font-normal capitalize'>{isGroupChat ? chatName : getSender(user, users)}</h2>
                             <button className="bg-slate-200 p-2 rounded-md" onClick={() => {
                                 isGroupChat ? setShowGroup(true) : setShowProfile(true)}}>
@@ -125,7 +123,7 @@ const ChatSpace = (props: propType) => {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col overflow-y-scroll scroll">
-                                        <ScrollableChat messages={messages} />
+                                        <ScrollableChat messages={messages} selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
                                     </div>
                                 )
                             }

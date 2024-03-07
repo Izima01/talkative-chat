@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import useGetUserDets from "@/hooks/useGetUserDets";
 
 const Signup = () => {
-    // useGetUserDets();
     const [userData, setUserData] = useState({ username: '', password: '', picture: '' });
     const [loading, setloading] = useState(false);
     const [picLoading, setpicLoading] = useState(false);

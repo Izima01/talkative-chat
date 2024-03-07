@@ -5,26 +5,29 @@ import { useState } from 'react';
 import ProfileModal from './ProfileModal';
 
 type PropsType = {
-  messages: Record<string, any>[]
+  messages: Record<string, any>[],
+  selectedUser: Record<string, any>,
+  setSelectedUser: (user: Record<string, any>) => void
 }
 
 const ScrollableChat = (props: PropsType) => {
-  const { messages } = props;
-  const { user, selectedChat } = useStore();
-  // const [loadingChat, setLoadingChat] = useState(false);
+  const { user } = useStore();
   const [showProfile, setShowProfile] = useState(false);
-  // const url = process.env.NEXT_PUBLIC_API_URL as string;
+  const { messages, setSelectedUser, selectedUser } = props;
 
   return (
     <>
-      {<ProfileModal profile={getSenderFull(user, selectedChat.users)} setShowProfile={setShowProfile} showProfile={showProfile} />}
+      {<ProfileModal profile={selectedUser} setShowProfile={setShowProfile} showProfile={showProfile} />}
       <ScrollableFeed>
         {
           messages && messages.map((m, i) => (
             <div className="flex gap-1 items-start"  key={m._id}>
                 {
                   (isSameSender(messages, m, i, user.userId) || isLastMessage(messages, i, user.userId)) && (
-                    <img src={m.sender.picture} alt={`${m.sender.username} picture`} className='w-8 h-8 rounded-full cursor-pointer mt-1.5' onClick={() => setShowProfile(true)} />
+                    <img src={m.sender.picture} alt={`${m.sender.username} picture`} className='w-8 h-8 rounded-full cursor-pointer mt-1.5' onClick={() => {
+                      setSelectedUser(m.sender);
+                      setShowProfile(true);
+                    }} />
                   )
                 }
                 <div
