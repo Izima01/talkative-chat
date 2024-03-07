@@ -22,6 +22,8 @@ const ProfileModal = (props: propTypes) => {
         profileRef.current?.close();
     }, [showProfile]);
 
+    console.log(profile, user);
+
     const editProfile = async (pic: string) => {
         try {
             const res = await fetch(`${url}users/edit/`, {
@@ -85,7 +87,7 @@ const ProfileModal = (props: propTypes) => {
                     </div>
                 }
                 {
-                    profile?._id === user.userId && (
+                    profile?.userId === user.userId && (
                         <div className='absolute bottom-2 right-2'>
                             <input type="file" id="fileInput" className='hidden' onChange={uploadPic} disabled={picLoading} />
                             <label htmlFor="fileInput" className='cursor-pointer bg-green-700 w-9 h-9 rounded-full flex justify-center items-center'>

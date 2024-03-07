@@ -1,3 +1,5 @@
+import OnlineIndicator from "./OnlineIndicator";
+
 type propTypes = {
     picture?: string,
     name?: string,
@@ -16,6 +18,7 @@ const UserBox = (props: propTypes) => {
                 <p className="font-medium text-lg capitalize">{name || 'John Doe'}</p>
                 <p className={isOnline ? 'text-green-500 -mt-1 text-sm font-mono font-semibold' : ''}>{isOnline ? 'Online' : ''}</p>
             </span>
+            { isOnline && <OnlineIndicator /> }
         </button>
     )
 }

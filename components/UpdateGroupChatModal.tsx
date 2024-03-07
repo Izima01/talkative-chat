@@ -126,7 +126,7 @@ const UpdateGroupChatModal = (props: propTypes) => {
     }
 
     return (
-        <dialog id='profile' ref={groupRef}>
+        <dialog id='profile' ref={groupRef} className="overflow-hidden">
             <button className='absolute top-3 right-3' onClick={() => setShowGroup(false)}>
                 <IoClose size={24} />
             </button>
@@ -134,7 +134,7 @@ const UpdateGroupChatModal = (props: propTypes) => {
                 {selectedChat.chatName}
             </h3>
 
-            <div className="flex flex-wrap w-full gap-1 m-2">
+            <div className="flex flex-wrap w-full gap-1 my-3 overflow-hidden">
                 {
                     selectedChat?.users?.map((user: Record<string, any>) => (
                         <div key={user._id} className="px-2 rounded-md bg-blue-500 hover:bg-blue-600 capitalize leading-normal cursor-pointer flex items-center text-white min-w-12">

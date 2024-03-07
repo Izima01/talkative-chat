@@ -100,7 +100,7 @@ const GroupChatModal = (props: propTypes) => {
                 <input type="text" placeholder="Add users" value={search} onChange={(e) => handleSearch(e.target.value)} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-2" />
             </form>
 
-            <div className="flex flex-wrap w-full gap-1 mx-2 mt-1">
+            <div className="flex flex-wrap w-full gap-1 my-2">
                 {
                     selectedUsers?.map((user: Record<string, any>) => (
                         <div key={user._id} className="px-2 rounded-md bg-blue-500 hover:bg-blue-600 capitalize leading-normal cursor-pointer flex items-center text-white">
