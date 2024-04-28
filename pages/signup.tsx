@@ -9,7 +9,7 @@ const Signup = () => {
     const [userData, setUserData] = useState({ username: '', password: '', picture: '' });
     const [loading, setloading] = useState(false);
     const [picLoading, setpicLoading] = useState(false);
-    const { user, setUser } = useStore();
+    const { user, setUser, socket } = useStore();
     const router = useRouter();
 
     const { username, password, picture } = userData;
@@ -65,9 +65,9 @@ const Signup = () => {
         const data = await response.json();
         if (data.success) {
             const user: User = await jwtDecode(data?.token);
-            // localStorage.setItem('talkative-auth', JSON.stringify({...user, token: data?.token}));
             setUser({ ...user, token: data?.token });
             alert('Sign up successful');
+            socket && socket.emit("newUser");
             setloading(false);
             router.push('/chats');
         } else {

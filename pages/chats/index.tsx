@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client';
 
 let selectedChatCompare: string;
-let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
+// let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 
 const Chats = () => {
   useGetUserDets();
@@ -19,7 +19,7 @@ const Chats = () => {
   const [messagesLoading, setmessagesLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
   const [messages, setMessages] = useState<Record<string, any>[]>([]);
-  const { user, setUser, setChats, fetchAgain, setFetchAgain, selectedChat, chats } = useStore();
+  const { user, setUser, setChats, fetchAgain, setFetchAgain, selectedChat, chats, socket, setSocket } = useStore();
   const endpoint: string = url.replace('v1/', '');
 
   async function chatFetcher() {
@@ -42,15 +42,15 @@ const Chats = () => {
 
   useEffect(() => {
     if (user.token && !socketConnected) {
-      socket = io(endpoint, {
+       setSocket(io(endpoint, {
         withCredentials: true,
         extraHeaders: {
           "Authorization": `Bearer ${user.token}`
         }
-      });
+      }));
 
-      socket.emit('setup', user);
-      socket.on("connection", () => {
+      socket && socket.emit('setup', user);
+      socket && socket.on("connection", () => {
         setSocketConnected(true);
         setUser({...user, isOnline: true});
       })
@@ -67,7 +67,7 @@ const Chats = () => {
       });
       const data = await res?.json();
       setMessages(data?.messages);
-      socket.emit("joinChat", selectedChat._id);
+      socket && socket.emit("joinChat", selectedChat._id);
       setmessagesLoading(false);
     } catch(err) {
       setmessagesLoading(false);
@@ -95,8 +95,8 @@ const Chats = () => {
     <div className='w-full h-screen bg-img flex flex-col justify-stretch items-stretch overflow-hidden'>
       <ChatHeader />
       <main className='p-3 flex gap-3 h-[91vh]'>
-        <ChatsList socketConnected={socketConnected} loading={loading} socket={socket} />
-        <ChatSpace socket={socket} messageLoading={messagesLoading} messages={messages} selectedChatCompare={selectedChatCompare} socketConnected={socketConnected} setMessages={setMessages} />
+        <ChatsList socketConnected={socketConnected} loading={loading} />
+        <ChatSpace messageLoading={messagesLoading} messages={messages} selectedChatCompare={selectedChatCompare} socketConnected={socketConnected} setMessages={setMessages} />
       </main>
     </div>
   )

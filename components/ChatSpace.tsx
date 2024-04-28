@@ -6,8 +6,6 @@ import ProfileModal from "./ProfileModal";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import Spinner from "./Spinner";
 import ScrollableChat from "./ScrollableChat";
-import { ClientToServerEvents, ServerToClientEvents } from '@/utils/types/socket.io-client';
-import { Socket } from 'socket.io-client';
 
 type propType = {
     messages: Record<string, any>[];
@@ -15,11 +13,10 @@ type propType = {
     setMessages: (msg: Record<string, any>[]) => void;
     selectedChatCompare: string;
     socketConnected: boolean;
-    socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 }
 
 const ChatSpace = (props: propType) => {
-    const { user, selectedChat, setSelectedChat, setFetchAgain, setNotifications, notifications } = useStore();
+    const { user, selectedChat, setSelectedChat, setFetchAgain, setNotifications, notifications, socket } = useStore();
     const toneRef = useRef<HTMLAudioElement>(null);
     const [newMessage, setNewMessage] = useState('');
     const [whoIsTyping, setwhoIsTyping] = useState('');
@@ -28,13 +25,13 @@ const ChatSpace = (props: propType) => {
     const [typing, setTyping] = useState(false);
     const url = process.env.NEXT_PUBLIC_API_URL as string;
     const { isGroupChat, chatName, users  } = selectedChat;
-    const { messageLoading, messages, setMessages, selectedChatCompare, socketConnected, socket } = props;
+    const { messageLoading, messages, setMessages, selectedChatCompare, socketConnected } = props;
     const [selectedUser, setSelectedUser] = useState<Record<string, any>>({});
 
     const sendMessage = async (e: React.KeyboardEvent) => {
         if (e.key == 'Enter' && newMessage) {
             try {
-                socket.emit("stopTyping", selectedChat._id);
+                socket && socket.emit("stopTyping", selectedChat._id);
                 const res = await fetch(`${url}messages/`, {
                     method: 'POST',
                     headers: {
@@ -46,7 +43,7 @@ const ChatSpace = (props: propType) => {
                 const data = await res.json();
                 if (!data.success) return alert (data.error);
                 setNewMessage("");
-                socket.emit("newMessage", data?.message);
+                socket && socket.emit("newMessage", data?.message);
                 setMessages([...messages, data?.message]);
                 setFetchAgain(true);
             } catch (error) {
@@ -56,14 +53,13 @@ const ChatSpace = (props: propType) => {
     }
     
     useEffect(() => {
-        socketConnected && socket.on('typing', (username) => setwhoIsTyping(username));
-        socketConnected && socket.on('stopTyping', () => setwhoIsTyping(''));
+        socketConnected && socket && socket.on('typing', (username) => setwhoIsTyping(username));
+        socketConnected && socket && socket.on('stopTyping', () => setwhoIsTyping(''));
 
-        socketConnected && socket.on("messageRecieved", (newMessage: Record<string, any>) => {
+        socketConnected && socket && socket.on("messageRecieved", (newMessage: Record<string, any>) => {
             if (!selectedChatCompare || selectedChatCompare !== newMessage.chat._id) {
                 if (!notifications.find(notif => notif.chat._id == newMessage.chat._id)) {
                     setNotifications([...notifications, {...newMessage, reason: "new message" }]);
-                    // toneRef.current?.play();
                 }
             } else {
                 setMessages([...messages, newMessage]);
@@ -78,7 +74,7 @@ const ChatSpace = (props: propType) => {
 
         if (!typing) {
             setTyping(true);
-            socket.emit("typing", selectedChat._id, user.username);
+            socket && socket.emit("typing", selectedChat._id, user.username);
         }
 
         let lastTypingTime = new Date().getTime();
@@ -89,7 +85,7 @@ const ChatSpace = (props: propType) => {
             const timeDiff = timeNow - lastTypingTime;
 
             if (timeDiff >= timerLength && typing) {
-                socket.emit("stopTyping", selectedChat._id);
+                socket && socket.emit("stopTyping", selectedChat._id);
                 setTyping(false);
             } 
         }, timerLength);

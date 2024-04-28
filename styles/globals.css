@@ -30,7 +30,7 @@
     box-shadow: 1px 1px 5px 2px rgb(61, 61, 255);
     margin-top: 132px;
     margin-right: -16px;
-    z-index: 10;
+    z-index: 20;
 }
 
 #searcher {

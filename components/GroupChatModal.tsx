@@ -9,18 +9,17 @@ type propTypes ={
     showGroup: boolean;
     socketConnected: boolean;
     setShowGroup: (val: boolean) => void;
-    socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 }
 
 const GroupChatModal = (props: propTypes) => {
     const groupRef = useRef<HTMLDialogElement>(null);
-    const { setShowGroup, showGroup, socket, socketConnected } = props;
+    const { setShowGroup, showGroup, socketConnected } = props;
     const [groupName, setgroupName] = useState('');
     const [selectedUsers, setselectedUsers] = useState<Record<string, any>[]>([]);
     const [search, setSearch] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [loading, setloading] = useState(false);
-    const { user, chats, setChats } = useStore();
+    const { user, chats, setChats, socket } = useStore();
     const url = process.env.NEXT_PUBLIC_API_URL as string;
 
     const handleSearch = async (val: string) => {
@@ -63,7 +62,7 @@ const GroupChatModal = (props: propTypes) => {
             });
             const data = await res?.json();
             setChats([data, ...chats]);
-            socketConnected && socket.emit("newGroup", data);
+            (socketConnected && socket) && socket.emit("newGroup", data);
             setShowGroup(false);
         } catch(err) {
             console.log(err);
