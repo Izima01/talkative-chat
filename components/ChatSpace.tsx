@@ -27,6 +27,8 @@ const ChatSpace = (props: propType) => {
     const { isGroupChat, chatName, users  } = selectedChat;
     const { messageLoading, messages, setMessages, selectedChatCompare, socketConnected } = props;
     const [selectedUser, setSelectedUser] = useState<Record<string, any>>({});
+    // console.log(selectedChat);
+    
 
     const sendMessage = async (e: React.KeyboardEvent) => {
         if (e.key == 'Enter' && newMessage) {

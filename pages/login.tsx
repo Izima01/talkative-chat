@@ -27,13 +27,12 @@ const SignIn = () => {
             setloading(true);
             const response = await fetch(`${url}users/login-test`, {
                 method: 'POST',
-                body: JSON.stringify({ username }),
+                body: JSON.stringify({ username: username.trim().toLowerCase() }),
                 headers: {
                     'Content-type': 'application/json'
                 }
             });
             const data = await response.json();
-            // console.log(data);
             if (data.success) {
                 const user: User = await jwtDecode(data?.token);
                 setUser({ ...user, token: data?.token });
@@ -58,7 +57,7 @@ const SignIn = () => {
                 <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit}>
                     <label htmlFor="" className="font-medium">
                         Username
-                        <input type="text" placeholder="Enter your Username" id="username" value={username} onChange={(e) => setusername(e.target.value.trim().toLowerCase())} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
+                        <input type="text" placeholder="Enter your Username" id="username" value={username} onChange={(e) => setusername(e.target.value)} required className="w-full bg-transparent placeholder:text-slate-300 border-slate-300 border-2 rounded-md px-3 py-2 outline-none leading-none mt-1" />
                     </label>
 
                     {/* <label htmlFor="" className="font-medium">

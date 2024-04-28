@@ -12,6 +12,7 @@ type proptype = {
 const ChatsList = (props: proptype) => {
     const { selectedChat, chats } = useStore();
     const [showGroup, setShowGroup] = useState(false);
+    console.log(chats);
 
     return (
         <aside className={`bg-white p-3 w-full md:w-5/12 md:flex gap-3 rounded-lg relative overflow-y-hidden border border-gray-600 flex-col items-center ${selectedChat._id ? 'hidden' : 'flex'}`}>
