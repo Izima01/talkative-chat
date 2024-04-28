@@ -22,8 +22,6 @@ const ProfileModal = (props: propTypes) => {
         profileRef.current?.close();
     }, [showProfile]);
 
-    console.log(profile, user);
-
     const editProfile = async (pic: string) => {
         try {
             const res = await fetch(`${url}users/edit/`, {
