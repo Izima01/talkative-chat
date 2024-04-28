@@ -3,13 +3,10 @@ import ChatItem from './ChatItem'
 import useStore from '@/store';
 import GroupChatModal from './GroupChatModal';
 import { FaPlus } from "react-icons/fa6";
-import { ClientToServerEvents, ServerToClientEvents } from '@/utils/types/socket.io-client';
-import { Socket } from 'socket.io-client';
 
 type proptype = {
     loading: boolean;
     socketConnected: boolean;
-    socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 }
 
 const ChatsList = (props: proptype) => {
@@ -39,7 +36,7 @@ const ChatsList = (props: proptype) => {
                     ))
                 }
             </div>
-            <GroupChatModal socket={props.socket} socketConnected={props.socketConnected} setShowGroup={setShowGroup} showGroup={showGroup} />
+            <GroupChatModal socketConnected={props.socketConnected} setShowGroup={setShowGroup} showGroup={showGroup} />
         </aside>
     )
 }

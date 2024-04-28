@@ -33,11 +33,17 @@ type Store = {
     setFetchAgain: (val: boolean) => void;
     notifications: Record<string, any>[];
     setNotifications: (val: Record<string, any>[]) => void;
-    // socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
-    // setSocket: (val: Socket<ServerToClientEvents, ClientToServerEvents>) => void;
+    socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
+    setSocket: (val: Socket<ServerToClientEvents, ClientToServerEvents>) => void;
 }
 
 const useStore = create<Store>((set) => ({
+    socket: null,
+    setSocket(val) {
+        set(state => ({
+            ...state, socket: val
+        }))
+    },
     user: emptyUser,
     setUser(val) {
         set(state => ({
@@ -62,12 +68,6 @@ const useStore = create<Store>((set) => ({
             ...state, fetchAgain: val
         }))
     },
-    // socket: null,
-    // setSocket(val) {
-    //     set(state => ({
-    //         ...state, socket: val
-    //     }))
-    // },
     notifications: [],
     setNotifications(val) {
         set(state => ({
