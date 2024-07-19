@@ -24,10 +24,20 @@ const ScrollableChat = (props: PropsType) => {
             <div className="flex gap-1 items-start"  key={m._id}>
                 {
                   (isSameSender(messages, m, i, user.userId) || isLastMessage(messages, i, user.userId)) && (
-                    <img src={m.sender?.picture} alt={`${m.sender?.username} picture`} className='w-8 h-8 rounded-full cursor-pointer mt-1.5' onClick={() => {
-                      setSelectedUser(m.sender);
-                      setShowProfile(true);
-                    }} />
+                    <img
+                      src={m.sender?.picture}
+                      alt={`${m.sender?.username} picture`}
+                      className='w-8 h-8 rounded-full cursor-pointer mt-1.5'
+                      onClick={() => {
+                        setSelectedUser(m.sender);
+                        setShowProfile(true);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') setShowProfile(true);
+                      }}
+                      tabIndex={0}
+                      role="button"
+                    />
                   )
                 }
                 <div
@@ -37,7 +47,17 @@ const ScrollableChat = (props: PropsType) => {
                   {
                     isSameSender(messages, m, i, user.userId) || isLastMessage(messages, i, user.userId) ? (
                       <>
-                        <p className='text-sm text-blue-500 -ml-2 -mt-2 mb-[2px] cursor-pointer font-semibold capitalize' onClick={() => setShowProfile(true)}>{m.sender?.username}</p>
+                        <p
+                          className='text-sm text-blue-500 -ml-2 -mt-2 mb-[2px] cursor-pointer font-semibold capitalize'
+                          onClick={() => setShowProfile(true)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') setShowProfile(true);
+                          }}
+                            tabIndex={0}
+                            role="button"
+                        >
+                          {m.sender?.username}
+                        </p>
                         <p>{m.content}</p>
                       </>
                       ) : (
