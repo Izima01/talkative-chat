@@ -14,7 +14,7 @@ const ChatHeader = () => {
 
     const url = process.env.NEXT_PUBLIC_API_URL as string;
 
-    const accessChat: (id: string) => void = async(id) => {
+    const accessChat: (id: string) => Promise<void> = async(id) => {
         try {
             setLoadingChat(true);
             const res = await fetch(`${url}chats?receiver=${id}`, {
